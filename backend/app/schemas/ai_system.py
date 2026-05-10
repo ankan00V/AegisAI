@@ -91,3 +91,9 @@ class RiskAssessmentResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# Bulk Import
+class BulkImportResponse(BaseModel):
+    created: int
+    errors: List[Dict[str, Any]]
