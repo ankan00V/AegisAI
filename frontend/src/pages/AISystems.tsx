@@ -64,14 +64,16 @@ export default function AISystems() {
     createMutation.mutate(formData)
   }
 
-  const sectors = [
-    'HR Tech',
-    'Finance',
-    'Healthcare',
-    'Education',
-    'Legal',
-    'Marketing',
-    'Other',
+  const sectorOptions = [
+    { value: 'healthcare', label: 'Healthcare' },
+    { value: 'education', label: 'Education' },
+    { value: 'employment', label: 'Employment' },
+    { value: 'law_enforcement', label: 'Law Enforcement' },
+    { value: 'critical_infrastructure', label: 'Critical Infrastructure' },
+    { value: 'finance', label: 'Finance' },
+    { value: 'migration', label: 'Migration' },
+    { value: 'justice', label: 'Justice' },
+    { value: 'other', label: 'Other' },
   ]
 
   const useCases = [
@@ -307,8 +309,10 @@ export default function AISystems() {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value="">Select sector...</option>
-                  {sectors.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                  {sectorOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
                   ))}
                 </select>
               </div>

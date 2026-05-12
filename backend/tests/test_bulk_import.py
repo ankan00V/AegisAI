@@ -37,8 +37,8 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            CV Screener,Ranks candidates by CV content,CV Screening,HR Tech,1.0
-            Fraud Detector,Flags anomalous transactions,Risk Assessment,Finance,2.1
+            CV Screener,Ranks candidates by CV content,CV Screening,employment,1.0
+            Fraud Detector,Flags anomalous transactions,Risk Assessment,finance,2.1
         """).strip().encode("utf-8")
 
         mock_session.query.return_value.filter.return_value.first.return_value = None
@@ -59,9 +59,9 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            CV Screener,Ranks candidates,CV Screening,HR Tech,1.0
-            ,Missing name system,Test,Test,1.0
-            Fraud Detector,Flags transactions,Risk Assessment,Finance,2.1
+            CV Screener,Ranks candidates,CV Screening,employment,1.0
+            ,Missing name system,other,other,1.0
+            Fraud Detector,Flags transactions,Risk Assessment,finance,2.1
         """).strip().encode("utf-8")
 
         def mock_filter(*args, **kwargs):
@@ -89,8 +89,8 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            CV Screener,Ranks candidates,CV Screening,HR Tech,1.0
-            CV Screener,Duplicate name,Risk Assessment,Finance,2.1
+            CV Screener,Ranks candidates,CV Screening,employment,1.0
+            CV Screener,Duplicate name,Risk Assessment,finance,2.1
         """).strip().encode("utf-8")
 
         def mock_filter(*args, **kwargs):
@@ -146,9 +146,9 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            ,Missing name 1,Test,Test,1.0
-            Duplicate Test,First occurrence,Test,Test,1.0
-            Duplicate Test,Second occurrence,Test,Test,1.0
+            ,Missing name 1,other,other,1.0
+            Duplicate Test,First occurrence,other,other,1.0
+            Duplicate Test,Second occurrence,other,other,1.0
         """).strip().encode("utf-8")
 
         call_count = [0]
@@ -179,7 +179,7 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            Test System,Test description,Test,Test,1.0
+            Test System,Test description,other,other,1.0
         """).strip().encode("utf-8")
 
         mock_session.query.return_value.filter.return_value.first.return_value = None
