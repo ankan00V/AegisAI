@@ -3,6 +3,7 @@ from app.schemas.ai_system import (
     AISystemCreate, 
     AISystemUpdate, 
     AISystemResponse,
+    AISystemSummarySchema,
     RiskClassificationRequest,
     RiskClassificationResponse
 )
@@ -11,7 +12,7 @@ from app.schemas.pagination import PaginatedResponse
 
 __all__ = [
     "UserCreate", "UserLogin", "UserResponse", "UserUpdateSchema", "Token",
-    "AISystemCreate", "AISystemUpdate", "AISystemResponse",
+    "AISystemCreate", "AISystemUpdate", "AISystemResponse", "AISystemSummarySchema",
     "RiskClassificationRequest", "RiskClassificationResponse",
     "DocumentCreate", "DocumentResponse",
     "PaginatedResponse",

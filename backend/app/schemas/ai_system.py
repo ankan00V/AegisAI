@@ -38,6 +38,21 @@ class AISystemResponse(BaseModel):
         from_attributes = True
 
 
+class AISystemSummarySchema(BaseModel):
+    """Lighter schema for list views — omits large fields like questionnaire_data."""
+    id: int
+    name: str
+    use_case: Optional[str]
+    sector: Optional[str]
+    risk_level: Optional[RiskLevel]
+    compliance_status: ComplianceStatus
+    compliance_score: Optional[float] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 # Risk Classification
 class RiskClassificationRequest(BaseModel):
     """Questionnaire for EU AI Act risk classification."""
