@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List
@@ -11,6 +11,7 @@ from app.models.user import User
 from app.models.ai_system import AISystem
 from app.models.document import Document, DocumentType, DocumentStatus
 from app.schemas.document import DocumentCreate, DocumentResponse, DocumentGenerateRequest, DocumentUpdateRequest
+from app.schemas.pagination import PaginatedResponse
 
 # PDF generation
 from reportlab.lib.pagesizes import letter, A4
@@ -175,14 +176,20 @@ def create_document(
     return document
 
 
-@router.get("/", response_model=List[DocumentResponse])
+@router.get("/", response_model=PaginatedResponse[DocumentResponse])
 def list_documents(
+    page: int = Query(1, ge=1, description="Page number (1-indexed)"),
+    limit: int = Query(50, ge=1, le=100, description="Items per page"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """List all documents for the current user."""
-    documents = db.query(Document).filter(Document.owner_id == current_user.id).all()
-    return documents
+    """List all documents for the current user with pagination."""
+    base_query = db.query(Document).filter(Document.owner_id == current_user.id)
+    total = base_query.count()
+    offset = (page - 1) * limit
+
+    documents = base_query.offset(offset).limit(limit).all()
+    return PaginatedResponse(items=documents, total=total, page=page, limit=limit)
 
 
 @router.get("/{document_id}", response_model=DocumentResponse)
