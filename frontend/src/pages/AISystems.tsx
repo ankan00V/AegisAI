@@ -74,15 +74,18 @@ export default function AISystems() {
     'Other',
   ]
 
-  const useCases = [
-    'CV Screening',
-    'Candidate Ranking',
-    'Performance Evaluation',
-    'Credit Scoring',
-    'Risk Assessment',
-    'Customer Service',
-    'Content Generation',
-    'Other',
+  const useCaseOptions = [
+    { value: 'cv_screening', label: 'CV Screening' },
+    { value: 'credit_scoring', label: 'Credit Scoring' },
+    { value: 'medical_diagnosis', label: 'Medical Diagnosis' },
+    { value: 'fraud_detection', label: 'Fraud Detection' },
+    { value: 'content_moderation', label: 'Content Moderation' },
+    { value: 'predictive_policing', label: 'Predictive Policing' },
+    { value: 'student_assessment', label: 'Student Assessment' },
+    { value: 'candidate_ranking', label: 'Candidate Ranking' },
+    { value: 'risk_assessment', label: 'Risk Assessment' },
+    { value: 'customer_service', label: 'Customer Service' },
+    { value: 'other', label: 'Other' },
   ]
 
   return (
@@ -322,8 +325,10 @@ export default function AISystems() {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value="">Select use case...</option>
-                  {useCases.map((u) => (
-                    <option key={u} value={u}>{u}</option>
+                  {useCaseOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
                   ))}
                 </select>
               </div>

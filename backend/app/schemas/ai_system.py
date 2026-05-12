@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 from datetime import datetime
-from app.models.ai_system import RiskLevel, ComplianceStatus
+from app.models.ai_system import RiskLevel, ComplianceStatus, UseCaseEnum
 
 
 class AISystemCreate(BaseModel):
     name: str
     description: Optional[str] = None
     version: Optional[str] = None
-    use_case: Optional[str] = None
+    use_case: Optional[UseCaseEnum] = None
     sector: Optional[str] = None
 
 
@@ -16,7 +16,7 @@ class AISystemUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     version: Optional[str] = None
-    use_case: Optional[str] = None
+    use_case: Optional[UseCaseEnum] = None
     sector: Optional[str] = None
     questionnaire_responses: Optional[Dict[str, Any]] = None
 
@@ -26,7 +26,7 @@ class AISystemResponse(BaseModel):
     name: str
     description: Optional[str]
     version: Optional[str]
-    use_case: Optional[str]
+    use_case: Optional[UseCaseEnum]
     sector: Optional[str]
     risk_level: Optional[RiskLevel]
     compliance_status: ComplianceStatus
