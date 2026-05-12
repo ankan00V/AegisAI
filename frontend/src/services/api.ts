@@ -81,6 +81,15 @@ export const aiSystemsApi = {
   delete: async (id: number) => {
     await api.delete(`/ai-systems/${id}`)
   },
+  exportCsv: async (riskLevel?: string) => {
+    const params: Record<string, string> = {}
+    if (riskLevel) params.risk_level = riskLevel
+    const response = await api.get('/ai-systems/export', {
+      params,
+      responseType: 'blob',
+    })
+    return response.data
+  },
 }
 
 // Classification API

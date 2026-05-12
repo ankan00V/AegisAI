@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { aiSystemsApi } from '../services/api'
-import { Bot, Plus, Trash2, Edit, Search, Filter, ArrowUpDown, X } from 'lucide-react'
+import { Bot, Plus, Trash2, Edit, Search, Filter, ArrowUpDown, Download, Loader2, X } from 'lucide-react'
 
 interface AISystem {
   id: number
@@ -28,6 +28,24 @@ export default function AISystems() {
   const [complianceFilter, setComplianceFilter] = useState('')
   const [sortBy, setSortBy] = useState('created_at')
   const [order, setOrder] = useState('desc')
+  const [isExporting, setIsExporting] = useState(false)
+
+  const handleExport = async () => {
+    setIsExporting(true)
+    try {
+      const blob = await aiSystemsApi.exportCsv(riskFilter || undefined)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'ai_systems.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      // Export failed silently — user can retry
+    } finally {
+      setIsExporting(false)
+    }
+  }
 
   const { data: systems = [], isLoading } = useQuery({
     queryKey: ['ai-systems', sortBy, order],
@@ -124,13 +142,27 @@ export default function AISystems() {
           <h1 className="text-2xl font-bold text-gray-900">AI Systems</h1>
           <p className="text-gray-600">Manage your AI systems for compliance tracking</p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-        >
-          <Plus className="w-5 h-5" />
-          Add AI System
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExport}
+            disabled={isExporting}
+            className="flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+          >
+            {isExporting ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Download className="w-5 h-5" />
+            )}
+            {isExporting ? 'Exporting...' : 'Export CSV'}
+          </button>
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+          >
+            <Plus className="w-5 h-5" />
+            Add AI System
+          </button>
+        </div>
       </div>
 
       {/* Search and Filters */}
