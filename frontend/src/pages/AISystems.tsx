@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { aiSystemsApi } from '../services/api'
-import { Bot, Plus, Trash2, Edit, Search, Filter, X } from 'lucide-react'
+import { Bot, Plus, Trash2, Edit, Search, Filter, ArrowUpDown, X } from 'lucide-react'
 
 interface AISystem {
   id: number
@@ -26,10 +26,12 @@ export default function AISystems() {
   const [searchTerm, setSearchTerm] = useState('')
   const [riskFilter, setRiskFilter] = useState('')
   const [complianceFilter, setComplianceFilter] = useState('')
+  const [sortBy, setSortBy] = useState('created_at')
+  const [order, setOrder] = useState('desc')
 
   const { data: systems = [], isLoading } = useQuery({
-    queryKey: ['ai-systems'],
-    queryFn: aiSystemsApi.list,
+    queryKey: ['ai-systems', sortBy, order],
+    queryFn: () => aiSystemsApi.list({ sort_by: sortBy, order }),
   })
 
   const createMutation = useMutation({
@@ -141,6 +143,31 @@ export default function AISystems() {
               <option value="under_review">Under Review</option>
               <option value="compliant">Compliant</option>
               <option value="non_compliant">Non Compliant</option>
+            </select>
+          </div>
+          <div className="relative">
+            <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <select
+              id="sort-by-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none cursor-pointer"
+            >
+              <option value="created_at">Sort by Date</option>
+              <option value="name">Sort by Name</option>
+              <option value="risk_level">Sort by Risk Level</option>
+              <option value="compliance_score">Sort by Score</option>
+            </select>
+          </div>
+          <div className="relative">
+            <select
+              id="sort-order-select"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none cursor-pointer"
+            >
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
             </select>
           </div>
           {(searchTerm || riskFilter || complianceFilter) && (
