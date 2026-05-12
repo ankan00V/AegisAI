@@ -16,6 +16,7 @@ from app.schemas.ai_system import (
     BulkImportResponse,
     ComplianceStatusUpdateSchema,
 )
+from app.schemas.pagination import PaginatedResponse
 
 router = APIRouter()
 
@@ -49,14 +50,16 @@ _SORTABLE_FIELDS = {
 }
 
 
-@router.get("/", response_model=List[AISystemResponse])
+@router.get("/", response_model=PaginatedResponse[AISystemResponse])
 def list_ai_systems(
     sort_by: Optional[str] = Query("created_at", description="Sort field: name, risk_level, compliance_score, created_at"),
     order: Optional[str] = Query("desc", description="Sort direction: asc, desc"),
+    page: int = Query(1, ge=1, description="Page number (1-indexed)"),
+    limit: int = Query(50, ge=1, le=100, description="Items per page"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """List all AI systems for the current user, with optional sorting."""
+    """List all AI systems for the current user, with optional sorting and pagination."""
     if sort_by not in _SORTABLE_FIELDS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -71,13 +74,18 @@ def list_ai_systems(
     column = _SORTABLE_FIELDS[sort_by]
     direction = asc(column) if order == "asc" else desc(column)
 
+    base_query = db.query(AISystem).filter(AISystem.owner_id == current_user.id)
+    total = base_query.count()
+    offset = (page - 1) * limit
+
     systems = (
-        db.query(AISystem)
-        .filter(AISystem.owner_id == current_user.id)
+        base_query
         .order_by(direction)
+        .offset(offset)
+        .limit(limit)
         .all()
     )
-    return systems
+    return PaginatedResponse(items=systems, total=total, page=page, limit=limit)
 
 
 @router.post("/import", response_model=BulkImportResponse)

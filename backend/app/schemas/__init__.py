@@ -7,10 +7,12 @@ from app.schemas.ai_system import (
     RiskClassificationResponse
 )
 from app.schemas.document import DocumentCreate, DocumentResponse
+from app.schemas.pagination import PaginatedResponse
 
 __all__ = [
     "UserCreate", "UserLogin", "UserResponse", "UserUpdateSchema", "Token",
     "AISystemCreate", "AISystemUpdate", "AISystemResponse",
     "RiskClassificationRequest", "RiskClassificationResponse",
-    "DocumentCreate", "DocumentResponse"
+    "DocumentCreate", "DocumentResponse",
+    "PaginatedResponse",
 ]
