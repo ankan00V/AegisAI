@@ -3,6 +3,7 @@ from app.schemas.ai_system import (
     AISystemCreate, 
     AISystemUpdate, 
     AISystemResponse,
+    ComplianceStatusUpdateSchema,
     RiskClassificationRequest,
     RiskClassificationResponse
 )
@@ -11,6 +12,7 @@ from app.schemas.document import DocumentCreate, DocumentResponse
 __all__ = [
     "UserCreate", "UserLogin", "UserResponse", "UserUpdateSchema", "Token",
     "AISystemCreate", "AISystemUpdate", "AISystemResponse",
+    "ComplianceStatusUpdateSchema",
     "RiskClassificationRequest", "RiskClassificationResponse",
     "DocumentCreate", "DocumentResponse"
 ]
