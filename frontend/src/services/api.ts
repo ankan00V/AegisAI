@@ -125,4 +125,12 @@ export const notificationsApi = {
     api.post('/notifications/read', { ids }),
 }
 
+// Guard Scanner API
+export const guardApi = {
+  scan: async (prompt: string) => {
+    const { data } = await api.post('/guard/scan', { prompt })
+    return data
+  },
+}
+
 export default api
