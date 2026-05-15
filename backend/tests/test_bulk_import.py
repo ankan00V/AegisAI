@@ -10,22 +10,22 @@ import textwrap
 @pytest.fixture
 def client():
     """Create a test client with mocked dependencies."""
-    with patch("app.core.database.get_db") as mock_db:
-        mock_session = MagicMock()
-        mock_db.return_value = mock_session
+    from app.main import app
+    from app.core.security import get_current_user
+    from app.core.database import get_db
 
-        from app.main import app
-        from app.core.security import get_current_user
+    mock_user = MagicMock()
+    mock_user.id = 1
 
-        mock_user = MagicMock()
-        mock_user.id = 1
+    mock_session = MagicMock()
 
-        app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_db] = lambda: mock_session
 
-        with TestClient(app) as client:
-            yield client, mock_session
+    with TestClient(app) as client:
+        yield client, mock_session
 
-        app.dependency_overrides.clear()
+    app.dependency_overrides.clear()
 
 
 class TestBulkImport:
@@ -37,8 +37,8 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            CV Screener,Ranks candidates by CV content,cv_screening,HR Tech,1.0
-            Fraud Detector,Flags anomalous transactions,fraud_detection,Finance,2.1
+            CV Screener,Ranks candidates by CV content,cv_screening,employment,1.0
+            Fraud Detector,Flags anomalous transactions,risk_assessment,finance,2.1
         """).strip().encode("utf-8")
 
         mock_session.query.return_value.filter.return_value.first.return_value = None
@@ -59,9 +59,9 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            CV Screener,Ranks candidates,cv_screening,HR Tech,1.0
-            ,Missing name system,other,Test,1.0
-            Fraud Detector,Flags transactions,fraud_detection,Finance,2.1
+            CV Screener,Ranks candidates,cv_screening,employment,1.0
+            ,Missing name system,other,other,1.0
+            Fraud Detector,Flags transactions,risk_assessment,finance,2.1
         """).strip().encode("utf-8")
 
         def mock_filter(*args, **kwargs):
@@ -89,8 +89,8 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            CV Screener,Ranks candidates,cv_screening,HR Tech,1.0
-            CV Screener,Duplicate name,risk_assessment,Finance,2.1
+            CV Screener,Ranks candidates,cv_screening,employment,1.0
+            CV Screener,Duplicate name,risk_assessment,finance,2.1
         """).strip().encode("utf-8")
 
         def mock_filter(*args, **kwargs):
@@ -146,9 +146,9 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            ,Missing name 1,other,Test,1.0
-            Duplicate Test,First occurrence,other,Test,1.0
-            Duplicate Test,Second occurrence,other,Test,1.0
+            ,Missing name 1,other,other,1.0
+            Duplicate Test,First occurrence,other,other,1.0
+            Duplicate Test,Second occurrence,other,other,1.0
         """).strip().encode("utf-8")
 
         call_count = [0]
@@ -179,7 +179,7 @@ class TestBulkImport:
 
         csv_content = textwrap.dedent("""\
             name,description,use_case,sector,version
-            Test System,Test description,other,Test,1.0
+            Test System,Test description,other,other,1.0
         """).strip().encode("utf-8")
 
         mock_session.query.return_value.filter.return_value.first.return_value = None

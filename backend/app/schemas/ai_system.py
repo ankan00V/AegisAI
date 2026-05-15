@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 from datetime import datetime
-from app.models.ai_system import RiskLevel, ComplianceStatus, UseCaseEnum
+from app.models.ai_system import RiskLevel, ComplianceStatus, SectorEnum, UseCaseEnum
 
 
 class AISystemCreate(BaseModel):
@@ -9,7 +9,7 @@ class AISystemCreate(BaseModel):
     description: Optional[str] = None
     version: Optional[str] = None
     use_case: Optional[UseCaseEnum] = None
-    sector: Optional[str] = None
+    sector: Optional[SectorEnum] = None
 
 
 class AISystemUpdate(BaseModel):
@@ -17,7 +17,7 @@ class AISystemUpdate(BaseModel):
     description: Optional[str] = None
     version: Optional[str] = None
     use_case: Optional[UseCaseEnum] = None
-    sector: Optional[str] = None
+    sector: Optional[SectorEnum] = None
     questionnaire_responses: Optional[Dict[str, Any]] = None
 
 
@@ -27,7 +27,7 @@ class AISystemResponse(BaseModel):
     description: Optional[str]
     version: Optional[str]
     use_case: Optional[UseCaseEnum]
-    sector: Optional[str]
+    sector: Optional[SectorEnum]
     risk_level: Optional[RiskLevel]
     compliance_status: ComplianceStatus
     compliance_score: Optional[float] = None
@@ -43,7 +43,7 @@ class RiskClassificationRequest(BaseModel):
     """Questionnaire for EU AI Act risk classification."""
     
     # Basic use case
-    use_case_category: str  # "hr_recruitment", "credit_scoring", "healthcare", etc.
+    use_case_category: UseCaseEnum  # "hr_recruitment", "credit_scoring", "healthcare", etc.
     
     # High-risk indicators (Article 6)
     is_safety_component: bool = False  # Part of a safety component of a product

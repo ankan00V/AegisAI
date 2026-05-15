@@ -20,6 +20,18 @@ class ComplianceStatus(str, enum.Enum):
     NON_COMPLIANT = "non_compliant"
 
 
+class SectorEnum(str, enum.Enum):
+    HEALTHCARE = "healthcare"
+    EDUCATION = "education"
+    EMPLOYMENT = "employment"
+    LAW_ENFORCEMENT = "law_enforcement"
+    CRITICAL_INFRASTRUCTURE = "critical_infrastructure"
+    FINANCE = "finance"
+    MIGRATION = "migration"
+    JUSTICE = "justice"
+    OTHER = "other"
+
+
 class UseCaseEnum(str, enum.Enum):
     CV_SCREENING = "cv_screening"
     CREDIT_SCORING = "credit_scoring"
@@ -46,8 +58,8 @@ class AISystem(Base):
     version = Column(String(50))
     
     # Classification
-    use_case = Column(Enum(UseCaseEnum), nullable=True)
-    sector = Column(String(255))    # e.g., "HR Tech", "Finance", "Healthcare"
+    use_case = Column(Enum(UseCaseEnum), nullable=True)  # Updated to Enum
+    sector = Column(Enum(SectorEnum), nullable=True)
     risk_level = Column(Enum(RiskLevel), nullable=True)
     
     # Compliance tracking
