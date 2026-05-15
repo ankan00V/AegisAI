@@ -1,23 +1,23 @@
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 from datetime import datetime
-from app.models.ai_system import RiskLevel, ComplianceStatus
+from app.models.ai_system import RiskLevel, ComplianceStatus, SectorEnum, UseCaseEnum
 
 
 class AISystemCreate(BaseModel):
     name: str
     description: Optional[str] = None
     version: Optional[str] = None
-    use_case: Optional[str] = None
-    sector: Optional[str] = None
+    use_case: Optional[UseCaseEnum] = None
+    sector: Optional[SectorEnum] = None
 
 
 class AISystemUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     version: Optional[str] = None
-    use_case: Optional[str] = None
-    sector: Optional[str] = None
+    use_case: Optional[UseCaseEnum] = None
+    sector: Optional[SectorEnum] = None
     questionnaire_responses: Optional[Dict[str, Any]] = None
 
 
@@ -26,8 +26,8 @@ class AISystemResponse(BaseModel):
     name: str
     description: Optional[str]
     version: Optional[str]
-    use_case: Optional[str]
-    sector: Optional[str]
+    use_case: Optional[UseCaseEnum]
+    sector: Optional[SectorEnum]
     risk_level: Optional[RiskLevel]
     compliance_status: ComplianceStatus
     compliance_score: Optional[float] = None
@@ -41,18 +41,16 @@ class AISystemResponse(BaseModel):
 # Risk Classification
 class RiskClassificationRequest(BaseModel):
     """Questionnaire for EU AI Act risk classification."""
-
+    
     # Basic use case
     use_case_category: str  # "hr_recruitment", "credit_scoring", "healthcare", etc.
-
+    
     # High-risk indicators (Article 6)
     is_safety_component: bool = False  # Part of a safety component of a product
-    affects_fundamental_rights: bool = (
-        False  # Employment, education, essential services
-    )
+    affects_fundamental_rights: bool = False  # Employment, education, essential services
     uses_biometric_data: bool = False
     makes_automated_decisions: bool = True  # Decisions without human review
-
+    
     # Specific high-risk areas (Annex III)
     hr_recruitment_screening: bool = False  # CV filtering, candidate ranking
     hr_promotion_termination: bool = False  # Promotion/termination decisions
@@ -61,7 +59,7 @@ class RiskClassificationRequest(BaseModel):
     law_enforcement: bool = False
     border_control: bool = False
     justice_system: bool = False
-
+    
     # Transparency (Article 52)
     interacts_with_humans: bool = True  # Chatbots, virtual assistants
     generates_synthetic_content: bool = False  # Deepfakes, AI-generated media
